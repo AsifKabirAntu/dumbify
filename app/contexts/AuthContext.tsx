@@ -118,10 +118,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return { error: { message: 'Authentication not configured' } }
     }
     
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
+    if (!error && data.user) {
+      setUser(data.user as User)
+      const { data: sessionData } = await supabase.auth.getSession()
+      setSession(sessionData.session)
+    }
     return { error }
   }
 
@@ -129,8 +134,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!supabase) {
       return { error: { message: 'Authentication not configured' } }
     }
-    
     const { error } = await supabase.auth.signOut()
+    if (!error) {
+      setUser(null)
+      setSession(null)
+    }
     return { error }
   }
 
