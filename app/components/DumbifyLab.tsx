@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Code2, Sparkles, Baby, Skull, User, GraduationCap, Zap } from 'lucide-react'
+import { Brain, Sparkles, Baby, Skull, User, GraduationCap, Zap } from 'lucide-react'
 import { useHistory } from '../contexts/HistoryContext'
 import { useAuth } from '../contexts/AuthContext'
 import { saveExplanation, getLatestExplanation } from '../../lib/explanations'
@@ -173,15 +173,15 @@ export default function DumbifyLab({ initialCode = '', initialTone = 'baby', ini
         {/* Header */}
         <div className="mb-12">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-md flex items-center justify-center">
-              <Code2 className="w-4 h-4 text-white" />
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+              <Brain className="w-4 h-4 text-white" />
             </div>
             <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
               Dumbify Lab
             </h1>
           </div>
           <p className="text-gray-600 dark:text-gray-400 max-w-2xl">
-            Transform complex code into clear explanations using AI
+            Transform complex code into clear explanations using Dumbify AI
           </p>
         </div>
 
@@ -193,7 +193,7 @@ export default function DumbifyLab({ initialCode = '', initialTone = 'baby', ini
             <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
               <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
                 <h3 className="text-sm font-medium text-gray-900 dark:text-white flex items-center gap-2">
-                  <Code2 className="w-4 h-4" />
+                  <Brain className="w-4 h-4" />
                   Code
                 </h3>
                 <div className="flex items-center gap-2">

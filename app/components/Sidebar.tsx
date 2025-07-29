@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Code2, History, Trash2, Clock, ChevronLeft, ChevronRight, LogOut, User } from 'lucide-react'
+import { Brain, History, Trash2, Clock, ChevronLeft, ChevronRight, LogOut, User, Code2 } from 'lucide-react'
 import { useHistory, HistoryItem } from '../contexts/HistoryContext'
 import { useAuth } from '../contexts/AuthContext'
 
@@ -69,8 +69,8 @@ export default function Sidebar({ activeSection, onSectionChange, onHistoryItemS
       {/* Header */}
       <div className="px-4 py-6 border-b border-gray-100 dark:border-gray-800">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-md flex items-center justify-center">
-            <Code2 className="w-4 h-4 text-white" />
+          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+            <Brain className="w-4 h-4 text-white" />
           </div>
           {!isCollapsed && (
             <div>
@@ -92,7 +92,7 @@ export default function Sidebar({ activeSection, onSectionChange, onHistoryItemS
                 : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-gray-200'
             }`}
           >
-            <Code2 className="w-4 h-4" />
+            <Brain className="w-4 h-4" />
             {!isCollapsed && <span>Lab</span>}
           </button>
           
