@@ -8,6 +8,7 @@ import AuthModal from './components/AuthModal'
 import NavBar from './components/NavBar'
 import ShareCardsSection from './components/ShareCardsSection'
 import type { HistoryItem } from './contexts/HistoryContext'
+import { Code2, Sparkles, Zap, Brain, Heart, ArrowRight, Github, Star } from 'lucide-react'
 
 export default function Home() {
   const { user, loading } = useAuth()
@@ -38,58 +39,221 @@ export default function Home() {
     )
   }
 
-  // If not authenticated, show only the authentication interface
+  // If not authenticated, show the modern welcome website
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-blue-900 flex items-center justify-center p-4">
-        <div className="max-w-md w-full">
-          {/* Welcome Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-              Welcome to <span className="text-blue-600 dark:text-blue-400">Dumbify</span>
-            </h1>
-            <p className="text-gray-600 dark:text-gray-300 text-lg">
-              Explain any code in a simplified, funny, or casual way using AI
-            </p>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white overflow-y-auto">
+        {/* Navigation */}
+        <nav className="container mx-auto px-6 py-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                <Code2 className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                Dumbify
+              </span>
+            </div>
+            <button
+              onClick={() => setShowAuthModal(true)}
+              className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
+            >
+              Sign In
+            </button>
           </div>
+        </nav>
 
-          {/* Feature Preview */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              🎯 What you'll get:
-            </h3>
-            <div className="space-y-3">
-              <div className="flex items-center space-x-3">
-                <span className="text-2xl">🧒</span>
-                <span className="text-gray-700 dark:text-gray-300">Baby Mode - Explains like you're 5</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <span className="text-2xl">💀</span>
-                <span className="text-gray-700 dark:text-gray-300">Sarcastic Mode - Funny developer humor</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <span className="text-2xl">💅</span>
-                <span className="text-gray-700 dark:text-gray-300">Influencer Mode - Gen-Z explanations</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <span className="text-2xl">👨‍🏫</span>
-                <span className="text-gray-700 dark:text-gray-300">Professor Mode - Academic breakdown</span>
+        {/* Hero Section */}
+        <section className="container mx-auto px-6 py-20 text-center">
+          <div className="max-w-4xl mx-auto">
+            <div className="inline-flex items-center space-x-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-4 py-2 mb-8">
+              <Sparkles className="w-4 h-4 text-purple-400" />
+              <span className="text-purple-300 text-sm">AI-Powered Code Explanations</span>
+            </div>
+            
+            <h1 className="text-6xl md:text-7xl font-bold mb-6 leading-tight">
+              Make Code
+              <span className="block bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                Human-Friendly
+              </span>
+            </h1>
+            
+            <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+              Transform complex code into simple explanations with personality. Choose your style: Baby talk, Sarcastic humor, Gen-Z vibes, or Academic depth.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <button
+                onClick={() => setShowAuthModal(true)}
+                className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl font-semibold text-lg transition-all duration-200 shadow-2xl hover:shadow-purple-500/25 hover:scale-105 flex items-center space-x-2"
+              >
+                <span>Start Dumbifying</span>
+                <ArrowRight className="w-5 h-5" />
+              </button>
+              <div className="flex items-center space-x-2 text-gray-400">
+                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                <span className="text-sm">Free to use • No credit card required</span>
               </div>
             </div>
           </div>
+        </section>
 
-          {/* Sign In Button */}
-          <button
-            onClick={() => setShowAuthModal(true)}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 shadow-lg"
-          >
-            Sign In to Start Dumbifying
-          </button>
+        {/* Features Section */}
+        <section className="container mx-auto px-6 py-20">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4">
+              Choose Your <span className="text-purple-400">Explanation Style</span>
+            </h2>
+            <p className="text-gray-300 text-lg max-w-2xl mx-auto">
+              Every developer learns differently. Pick the tone that resonates with you.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                icon: "🧒",
+                title: "Baby Mode",
+                description: "Explains like you're 5",
+                example: "This code is like a magic box that sorts your toys!",
+                gradient: "from-pink-500 to-rose-500"
+              },
+              {
+                icon: "💀",
+                title: "Sarcastic Mode", 
+                description: "Developer humor",
+                example: "Oh great, another for loop. How original...",
+                gradient: "from-orange-500 to-red-500"
+              },
+              {
+                icon: "💅",
+                title: "Influencer Mode",
+                description: "Gen-Z explanations",
+                example: "This function is giving main character energy, no cap!",
+                gradient: "from-purple-500 to-pink-500"
+              },
+              {
+                icon: "👨‍🏫",
+                title: "Professor Mode",
+                description: "Academic breakdown",
+                example: "This algorithm demonstrates optimal time complexity...",
+                gradient: "from-blue-500 to-indigo-500"
+              }
+            ].map((mode, index) => (
+              <div key={index} className="group">
+                <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+                  <div className="text-4xl mb-4">{mode.icon}</div>
+                  <h3 className="text-xl font-semibold mb-2">{mode.title}</h3>
+                  <p className="text-gray-400 mb-4">{mode.description}</p>
+                  <div className="bg-gray-800/50 rounded-lg p-3 text-sm text-gray-300 italic">
+                    "{mode.example}"
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
 
-          <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">
-            New to Dumbify? You can sign up when you click above!
-          </p>
-        </div>
+        {/* Benefits Section */}
+        <section className="container mx-auto px-6 py-20">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <h2 className="text-4xl font-bold mb-6">
+                Why Developers <span className="text-blue-400">Love</span> Dumbify
+              </h2>
+              
+              <div className="space-y-6">
+                {[
+                  {
+                    icon: Zap,
+                    title: "Instant Understanding",
+                    description: "Get clear explanations in seconds, not hours of documentation reading."
+                  },
+                  {
+                    icon: Brain,
+                    title: "Learn While You Code",
+                    description: "Build intuition about unfamiliar codebases and programming patterns."
+                  },
+                  {
+                    icon: Heart,
+                    title: "Personalized Learning",
+                    description: "Choose the explanation style that matches your learning preference."
+                  }
+                ].map((benefit, index) => (
+                  <div key={index} className="flex space-x-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <benefit.icon className="w-6 h-6 text-white" />
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">{benefit.title}</h3>
+                      <p className="text-gray-400">{benefit.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <div className="relative">
+              <div className="bg-gradient-to-br from-blue-500/20 to-purple-600/20 rounded-3xl p-8 backdrop-blur-lg border border-white/10">
+                <div className="bg-gray-900/50 rounded-2xl p-6">
+                  <div className="flex items-center space-x-2 mb-4">
+                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                  </div>
+                  <div className="font-mono text-sm text-gray-300 space-y-2">
+                    <div className="text-blue-400">function fibonacci(n) {"{"}
+                    </div>
+                    <div className="pl-4 text-purple-400">if (n &lt;= 1) return n;</div>
+                    <div className="pl-4 text-green-400">return fibonacci(n-1) + fibonacci(n-2);</div>
+                    <div className="text-blue-400">{"}"}</div>
+                  </div>
+                </div>
+                <div className="mt-6 p-4 bg-purple-500/10 rounded-xl border border-purple-500/20">
+                  <div className="text-sm text-purple-300 font-medium mb-2">🧒 Baby Mode Explanation:</div>
+                  <div className="text-sm text-gray-300 italic">
+                    "This is like a magic number machine that makes special numbers called Fibonacci! It's like counting bunny families! 🐰"
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="container mx-auto px-6 py-20 text-center">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-4xl font-bold mb-6">
+              Ready to Transform Your Code Understanding?
+            </h2>
+            <p className="text-xl text-gray-300 mb-10">
+              Join thousands of developers who've made code more human-friendly
+            </p>
+            <button
+              onClick={() => setShowAuthModal(true)}
+              className="px-10 py-5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl font-bold text-xl transition-all duration-200 shadow-2xl hover:shadow-purple-500/25 hover:scale-105"
+            >
+              Get Started for Free
+            </button>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="container mx-auto px-6 py-8 border-t border-white/10">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                <Code2 className="w-4 h-4 text-white" />
+              </div>
+              <span className="font-semibold">Dumbify</span>
+            </div>
+            <div className="text-gray-400 text-sm">
+              Made with ❤️ for developers who want simpler explanations
+            </div>
+          </div>
+        </footer>
 
         {/* Auth Modal */}
         <AuthModal 
@@ -100,7 +264,7 @@ export default function Home() {
     )
   }
 
-      // If authenticated, show the main app interface
+        // If authenticated, show the main app interface
     return (
       <div className="flex h-screen bg-gray-50 dark:bg-[#0D1117] overflow-hidden">
         <Sidebar
