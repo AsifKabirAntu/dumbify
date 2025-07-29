@@ -21,11 +21,8 @@ export default function ExplanationDisplay({
 }: ExplanationDisplayProps) {
   // Parse the explanation to extract overview and line-by-line sections
   const parseExplanation = (text: string) => {
-    console.log('Raw explanation text:', text) // Debug log
-    
     // Split by ## to get sections
     const sections = text.split('##').filter(section => section.trim())
-    console.log('Sections after split:', sections) // Debug log
     
     let overview = ''
     let lineByLine = ''
@@ -34,21 +31,19 @@ export default function ExplanationDisplay({
       const trimmed = section.trim()
       const lowerSection = trimmed.toLowerCase()
       
-      console.log('Processing section:', trimmed.substring(0, 100)) // Debug log
-      
       // Check for overview/summary section (various formats)
       if (lowerSection.includes('summary') || 
           lowerSection.includes('gist') || 
           lowerSection.includes('tea') ||
           lowerSection.includes('executive summary') ||
-          trimmed.includes('🎯')) {
+          trimmed.includes('🎯') ||
+          lowerSection.includes('quick summary')) {
         // Remove the header line and take the content
         const lines = trimmed.split('\n').filter(line => line.trim())
         overview = lines.slice(1).join('\n').trim() || lines[0]?.replace(/^[^a-zA-Z]*/, '').trim() || ''
-        console.log('Found overview:', overview.substring(0, 50)) // Debug log
       } 
       // Check for line-by-line section (various formats)
-      else if (lowerSection.includes('line') || 
+      else if (lowerSection.includes('line by line') || 
                lowerSection.includes('breakdown') || 
                lowerSection.includes('roast') ||
                lowerSection.includes('breaking it down') ||
@@ -57,13 +52,11 @@ export default function ExplanationDisplay({
         // Remove the header line and take the content
         const lines = trimmed.split('\n').filter(line => line.trim())
         lineByLine = lines.slice(1).join('\n').trim() || lines[0]?.replace(/^[^a-zA-Z]*/, '').trim() || ''
-        console.log('Found lineByLine:', lineByLine.substring(0, 50)) // Debug log
       }
     }
     
     // If no structured sections found, try alternative parsing strategies
     if (!overview && !lineByLine) {
-      console.log('No sections found, trying alternative parsing')
       
       // Strategy 1: Look for numbered lists or bullet points that might indicate line-by-line
       const lines = text.split('\n').filter(line => line.trim())
@@ -127,9 +120,6 @@ export default function ExplanationDisplay({
     if (!overview && lineByLine) {
       overview = "Here's the explanation:"
     }
-    
-    console.log('Final overview:', overview.substring(0, 100))
-    console.log('Final lineByLine:', lineByLine.substring(0, 100))
     
     return { 
       overview: overview || text.trim(), 
