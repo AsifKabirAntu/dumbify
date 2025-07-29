@@ -78,7 +78,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!supabase) {
       return { error: { message: 'Authentication not configured' } }
     }
-    const { error } = await supabase.auth.signUp({
+    
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -87,6 +88,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         },
       },
     })
+
+    // If signup successful but user profile might not be created by trigger,
+    // let's manually create it as a fallback
+    if (!error && data.user) {
+      try {
+        // Try to create user profile manually (will be ignored if trigger already created it)
+        await supabase
+          .from('users')
+          .insert([
+            {
+              id: data.user.id,
+              email: data.user.email,
+              full_name: fullName || data.user.email,
+            }
+          ])
+          .select()
+          .single()
+      } catch (profileError) {
+        console.log('User profile creation handled by trigger or already exists')
+      }
+    }
+
     return { error }
   }
 
