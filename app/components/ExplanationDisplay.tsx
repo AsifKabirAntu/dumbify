@@ -21,110 +21,53 @@ export default function ExplanationDisplay({
 }: ExplanationDisplayProps) {
   // Parse the explanation to extract overview and line-by-line sections
   const parseExplanation = (text: string) => {
-    // Split by ## to get sections
-    const sections = text.split('##').filter(section => section.trim())
+    // First, split by double newlines to separate major sections
+    const sections = text.split('##').map(section => section.trim()).filter(Boolean)
     
     let overview = ''
     let lineByLine = ''
+
+    // Add debug logging
+    console.log('Parsing sections:', sections)
     
-    for (const section of sections) {
-      const trimmed = section.trim()
-      const lowerSection = trimmed.toLowerCase()
+    // Process each section
+    sections.forEach(section => {
+      // Get the first line (header) and rest of the content
+      const lines = section.split('\n')
+      const header = lines[0]?.toLowerCase() || ''
+      const content = lines.slice(1).join('\n').trim()
+
+      console.log('Processing section:', { header, contentPreview: content.substring(0, 50) })
       
-      // Check for overview/summary section (various formats)
-      if (lowerSection.includes('summary') || 
-          lowerSection.includes('gist') || 
-          lowerSection.includes('tea') ||
-          lowerSection.includes('executive summary') ||
-          trimmed.includes('🎯') ||
-          lowerSection.includes('quick summary')) {
-        // Remove the header line and take the content
-        const lines = trimmed.split('\n').filter(line => line.trim())
-        overview = lines.slice(1).join('\n').trim() || lines[0]?.replace(/^[^a-zA-Z]*/, '').trim() || ''
-      } 
-      // Check for line-by-line section (various formats)
-      else if (lowerSection.includes('line by line') || 
-               lowerSection.includes('breakdown') || 
-               lowerSection.includes('roast') ||
-               lowerSection.includes('breaking it down') ||
-               lowerSection.includes('technical breakdown') ||
-               trimmed.includes('🔍')) {
-        // Remove the header line and take the content
-        const lines = trimmed.split('\n').filter(line => line.trim())
-        lineByLine = lines.slice(1).join('\n').trim() || lines[0]?.replace(/^[^a-zA-Z]*/, '').trim() || ''
+      // Check if this is the overview section
+      if (header.includes('quick summary') || header.includes('🎯')) {
+        overview = content
+        console.log('Found overview:', overview.substring(0, 50))
       }
+      
+      // Check if this is the line-by-line section
+      if (header.includes('line by line') || header.includes('🔍')) {
+        lineByLine = content
+        console.log('Found lineByLine:', lineByLine.substring(0, 50))
+      }
+    })
+
+    // If we didn't find an overview but have content, use the first section
+    if (!overview && sections.length > 0) {
+      const firstSection = sections[0]
+      const lines = firstSection.split('\n')
+      overview = lines.slice(1).join('\n').trim() || lines[0]
     }
-    
-    // If no structured sections found, try alternative parsing strategies
-    if (!overview && !lineByLine) {
-      
-      // Strategy 1: Look for numbered lists or bullet points that might indicate line-by-line
-      const lines = text.split('\n').filter(line => line.trim())
-      let overviewLines = []
-      let lineByLineLines = []
-      let foundLineByLineStart = false
-      
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim()
-        
-        // Check if this line looks like a line-by-line explanation start
-        if (line.match(/^\d+[\.\):]/) || // Numbered list: "1.", "1)", "1:"
-            line.startsWith('- ') || // Bullet point
-            line.startsWith('• ') || // Bullet point
-            line.toLowerCase().includes('line by line') ||
-            line.toLowerCase().includes('breakdown')) {
-          foundLineByLineStart = true
-          if (!line.toLowerCase().includes('line by line') && !line.toLowerCase().includes('breakdown')) {
-            lineByLineLines.push(line)
-          }
-        } else if (foundLineByLineStart) {
-          // Continue adding to line-by-line if we've started
-          if (line.match(/^\d+[\.\):]/) || line.startsWith('- ') || line.startsWith('• ')) {
-            lineByLineLines.push(line)
-          } else if (line.length > 10) { // Substantial content
-            lineByLineLines.push(line)
-          }
-        } else {
-          // Add to overview if we haven't started line-by-line yet
-          overviewLines.push(line)
-        }
-      }
-      
-      if (overviewLines.length > 0) {
-        overview = overviewLines.join('\n').trim()
-      }
-      if (lineByLineLines.length > 0) {
-        lineByLine = lineByLineLines.join('\n').trim()
-      }
-      
-      // Strategy 2: If still no luck, split roughly in half
-      if (!overview && !lineByLine) {
-        const parts = text.split('\n\n').filter(part => part.trim())
-        if (parts.length >= 2) {
-          overview = parts[0].trim()
-          lineByLine = parts.slice(1).join('\n\n').trim()
-        } else {
-          // Last resort: just use the first few sentences as overview
-          const sentences = text.split(/[.!?]+/).filter(s => s.trim())
-          if (sentences.length > 3) {
-            overview = sentences.slice(0, 2).join('.') + '.'
-            lineByLine = sentences.slice(2).join('.') + '.'
-          } else {
-            overview = text.trim()
-          }
-        }
-      }
-    }
-    
-    // Ensure we have at least an overview
-    if (!overview && lineByLine) {
-      overview = "Here's the explanation:"
-    }
-    
-    return { 
-      overview: overview || text.trim(), 
-      lineByLine: lineByLine || ''
-    }
+
+    // Log final results
+    console.log('Final parse results:', {
+      overviewLength: overview.length,
+      lineByLineLength: lineByLine.length,
+      overviewPreview: overview.substring(0, 50),
+      lineByLinePreview: lineByLine.substring(0, 50)
+    })
+
+    return { overview, lineByLine }
   }
 
   const { overview, lineByLine } = parseExplanation(explanation)
@@ -219,7 +162,10 @@ export default function ExplanationDisplay({
         </div>
 
         {/* Overview */}
-        <div className="prose prose-sm max-w-none text-gray-800 dark:text-gray-200 mb-4">
+        <div className="prose prose-sm max-w-none text-gray-800 dark:text-gray-200 mb-6">
+          <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+            🎯 Overview
+          </h3>
           <div className="whitespace-pre-wrap leading-relaxed">
             {overview}
           </div>

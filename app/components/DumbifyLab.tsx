@@ -191,13 +191,33 @@ export default function DumbifyLab({ initialCode = '', initialTone = 'baby', ini
           <div className="space-y-6">
             {/* Code Input */}
             <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
-              <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
+              <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
                 <h3 className="text-sm font-medium text-gray-900 dark:text-white flex items-center gap-2">
                   <Code2 className="w-4 h-4" />
                   Code
                 </h3>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setCode('')}
+                    className="text-xs text-gray-500 hover:text-red-500 transition-colors duration-200 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    Clear
+                  </button>
+                </div>
               </div>
-              <div className="p-4">
+              <div className="relative">
+                {/* Line Numbers */}
+                <div className="absolute top-0 left-0 bottom-0 w-12 bg-gray-50 dark:bg-gray-800/50 border-r border-gray-200 dark:border-gray-700 select-none">
+                  {code.split('\n').map((_, i) => (
+                    <div
+                      key={i}
+                      className="text-xs text-gray-400 dark:text-gray-500 text-right pr-2 font-mono leading-6"
+                    >
+                      {i + 1}
+                    </div>
+                  ))}
+                </div>
+                {/* Code Editor */}
                 <textarea
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
@@ -206,18 +226,18 @@ function fibonacci(n) {
   if (n <= 1) return n;
   return fibonacci(n - 1) + fibonacci(n - 2);
 }"
-                  className="w-full h-64 p-3 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 font-mono text-sm rounded-md border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none placeholder-gray-500 dark:placeholder-gray-400"
+                  className="w-full h-64 pl-14 pr-4 py-3 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-mono text-sm leading-6 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 resize-none placeholder-gray-500 dark:placeholder-gray-400"
+                  spellCheck="false"
                 />
-                <div className="flex items-center justify-between mt-3">
-                  <div className="text-xs text-gray-500 dark:text-gray-400">
-                    {code.length} characters
+                {/* Status Bar */}
+                <div className="absolute bottom-0 left-0 right-0 h-6 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700 px-4 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                  <div className="flex items-center gap-4">
+                    <span>{code.split('\n').length} lines</span>
+                    <span>{code.length} characters</span>
                   </div>
-                  <button
-                    onClick={() => setCode('')}
-                    className="text-xs text-gray-500 hover:text-red-500 transition-colors duration-200"
-                  >
-                    Clear
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <span className="px-2 py-0.5 rounded bg-gray-200 dark:bg-gray-700">Plain Text</span>
+                  </div>
                 </div>
               </div>
             </div>
