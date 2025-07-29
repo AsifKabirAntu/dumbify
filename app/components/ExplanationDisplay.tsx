@@ -19,10 +19,9 @@ export default function ExplanationDisplay({
   onCopy, 
   onDownload 
 }: ExplanationDisplayProps) {
-  const [showLineByLine, setShowLineByLine] = useState(false)
-
   // Parse the explanation to extract overview and line-by-line sections
   const parseExplanation = (text: string) => {
+    // Split by ## to get sections
     const sections = text.split('##').filter(section => section.trim())
     
     let overview = ''
@@ -30,22 +29,56 @@ export default function ExplanationDisplay({
     
     for (const section of sections) {
       const trimmed = section.trim()
-      if (trimmed.toLowerCase().includes('overview') || trimmed.toLowerCase().includes('summary')) {
-        overview = trimmed.replace(/^(overview|summary):?\s*/i, '').trim()
-      } else if (trimmed.toLowerCase().includes('line') || trimmed.toLowerCase().includes('breakdown')) {
-        lineByLine = trimmed.replace(/^.*?:\s*/i, '').trim()
+      const lowerSection = trimmed.toLowerCase()
+      
+      // Check for overview/summary section (various formats)
+      if (lowerSection.includes('summary') || 
+          lowerSection.includes('gist') || 
+          lowerSection.includes('tea') ||
+          lowerSection.includes('executive summary') ||
+          trimmed.includes('🎯')) {
+        // Remove the header line and take the content
+        const lines = trimmed.split('\n').filter(line => line.trim())
+        overview = lines.slice(1).join('\n').trim() || lines[0]?.replace(/^[^a-zA-Z]*/, '').trim() || ''
+      } 
+      // Check for line-by-line section (various formats)
+      else if (lowerSection.includes('line') || 
+               lowerSection.includes('breakdown') || 
+               lowerSection.includes('roast') ||
+               lowerSection.includes('breaking it down') ||
+               lowerSection.includes('technical breakdown') ||
+               trimmed.includes('🔍')) {
+        // Remove the header line and take the content
+        const lines = trimmed.split('\n').filter(line => line.trim())
+        lineByLine = lines.slice(1).join('\n').trim() || lines[0]?.replace(/^[^a-zA-Z]*/, '').trim() || ''
       }
     }
     
-    // If no clear sections found, use the first part as overview
+    // If no clear sections found, try to split by double newlines
     if (!overview && !lineByLine) {
-      const parts = text.split('\n\n')
-      overview = parts[0] || text
-      lineByLine = parts.slice(1).join('\n\n')
+      const parts = text.split('\n\n').filter(part => part.trim())
+      if (parts.length >= 2) {
+        overview = parts[0].trim()
+        lineByLine = parts.slice(1).join('\n\n').trim()
+      } else {
+        // If still no clear structure, use the entire text as overview
+        overview = text.trim()
+      }
     }
     
-    return { overview: overview || text, lineByLine }
+    // Ensure we have at least an overview
+    if (!overview && lineByLine) {
+      overview = "Here's the explanation:"
+    }
+    
+    return { 
+      overview: overview || text.trim(), 
+      lineByLine: lineByLine || ''
+    }
   }
+
+  const { overview, lineByLine } = parseExplanation(explanation)
+  const [showLineByLine, setShowLineByLine] = useState(!!lineByLine) // Show by default if content exists
 
   // Format line-by-line text to improve readability
   const formatLineByLine = (text: string) => {
@@ -69,7 +102,6 @@ export default function ExplanationDisplay({
       .join('\n')
   }
 
-  const { overview, lineByLine } = parseExplanation(explanation)
   const wordCount = explanation.split(/\s+/).length
   const readingTime = Math.ceil(wordCount / 200) // Average reading speed
 
@@ -143,21 +175,26 @@ export default function ExplanationDisplay({
           </div>
         </div>
 
-        {/* Line-by-line toggle */}
+        {/* Line-by-line section */}
         {lineByLine && (
-          <div className="border-t border-gray-200 dark:border-gray-600 pt-4">
-            <button
-              onClick={() => setShowLineByLine(!showLineByLine)}
-              className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
-            >
-              {showLineByLine ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              {showLineByLine ? 'Hide' : 'Show'} Line-by-Line Breakdown
-            </button>
+          <div className="border-t border-gray-200 dark:border-gray-600 pt-6">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                🔍 Line-by-Line Breakdown
+              </h4>
+              <button
+                onClick={() => setShowLineByLine(!showLineByLine)}
+                className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+              >
+                {showLineByLine ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {showLineByLine ? 'Hide' : 'Show'}
+              </button>
+            </div>
 
             {showLineByLine && (
-              <div className="mt-4 bg-white/50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-600 overflow-hidden">
-                <div className="p-4 max-h-96 overflow-y-auto">
-                  <div className="space-y-3 text-sm text-gray-800 dark:text-gray-200 leading-relaxed">
+              <div className="bg-white/70 dark:bg-gray-800/70 rounded-lg border border-gray-200 dark:border-gray-600 overflow-hidden">
+                <div className="p-6">
+                  <div className="space-y-4 text-gray-800 dark:text-gray-200 leading-relaxed">
                     {formatLineByLine(lineByLine).split('\n').map((line, index) => {
                       if (!line.trim()) return null
                       
@@ -167,12 +204,12 @@ export default function ExplanationDisplay({
                       return (
                         <div key={index} className={`${isBulletPoint ? 'pl-4' : ''} break-words`}>
                           {isBulletPoint ? (
-                            <div className="flex gap-2">
-                              <span className="text-gray-400 dark:text-gray-500 mt-1">•</span>
+                            <div className="flex gap-3">
+                              <span className="text-blue-500 dark:text-blue-400 mt-1 text-sm">▶</span>
                               <span className="flex-1">{line.replace(/^[-•]\s*/, '')}</span>
                             </div>
                           ) : (
-                            <span>{line}</span>
+                            <div className="font-medium">{line}</div>
                           )}
                         </div>
                       )
