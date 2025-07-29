@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { X, Mail, Lock, User, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 
@@ -18,7 +18,26 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const { signIn, signUp } = useAuth()
+  const { signIn, signUp, user } = useAuth()
+
+  const resetForm = () => {
+    setEmail('')
+    setPassword('')
+    setFullName('')
+    setError('')
+    setShowPassword(false)
+  }
+
+  // Auto-close modal when user becomes authenticated
+  useEffect(() => {
+    if (user && isOpen) {
+      // Small delay to ensure smooth transition
+      setTimeout(() => {
+        onClose()
+        resetForm()
+      }, 100)
+    }
+  }, [user, isOpen, onClose])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -34,22 +53,12 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         if (error) throw error
       }
       
-      // Success - close modal
-      onClose()
-      resetForm()
+      // The useEffect above will handle closing the modal when user state updates
     } catch (err: any) {
       setError(err.message || 'Something went wrong')
     } finally {
       setLoading(false)
     }
-  }
-
-  const resetForm = () => {
-    setEmail('')
-    setPassword('')
-    setFullName('')
-    setError('')
-    setShowPassword(false)
   }
 
   const handleClose = () => {
