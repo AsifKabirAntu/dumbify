@@ -178,11 +178,14 @@ Research it yourself: dumbify.dev
 
       {/* Card Preview */}
       <div className="relative mb-6">
-        <div className="relative overflow-hidden rounded-lg">
+        <div className="relative overflow-hidden rounded-lg w-[432px] h-[432px] mx-auto">
           <div 
             ref={cardRef}
-            className="w-full aspect-square max-w-[1080px] mx-auto"
-            style={{ width: '1080px', height: '1080px' }}
+            className="w-[1080px] h-[1080px] origin-top-left"
+            style={{ 
+              transform: 'scale(0.4)',
+              transformOrigin: 'top left'
+            }}
           >
             {getCardContent()}
           </div>
