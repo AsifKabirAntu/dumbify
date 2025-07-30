@@ -181,8 +181,8 @@ Research it yourself: dumbify.dev
         <div className="relative overflow-hidden rounded-lg">
           <div 
             ref={cardRef}
-            className="w-full aspect-square max-w-md mx-auto"
-            style={{ width: '400px', height: '400px' }}
+            className="w-full aspect-square max-w-[1080px] mx-auto"
+            style={{ width: '1080px', height: '1080px' }}
           >
             {getCardContent()}
           </div>
