@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Dumbify - AI Code Explanations Made Simple',
-  description: 'Transform complex code into simple, fun, and easy-to-understand explanations using AI. Choose from Baby, Sarcastic, Influencer, or Professor modes!',
+  description: 'Transform complex code into simple, fun, and easy-to-understand explanations using Dumbify AI.',
   icons: {
     icon: '/favicon.ico',
     apple: '/apple-icon.png'
@@ -23,7 +23,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} overflow-hidden`} suppressHydrationWarning>
+      <body className={inter.className} suppressHydrationWarning>
         <ThemeProvider>
           <AuthProvider>
             <HistoryProvider>

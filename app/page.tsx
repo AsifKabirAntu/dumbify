@@ -8,7 +8,8 @@ import AuthModal from './components/AuthModal'
 import NavBar from './components/NavBar'
 import ShareCardsSection from './components/ShareCardsSection'
 import type { HistoryItem } from './contexts/HistoryContext'
-import { Code2, Sparkles, Zap, Brain, Heart, ArrowRight, Github, Star } from 'lucide-react'
+import { Sparkles, Zap, Brain, Heart, ArrowRight, Github, Star } from 'lucide-react'
+import Image from 'next/image'
 
 export default function Home() {
   const { user, loading } = useAuth()
@@ -42,13 +43,19 @@ export default function Home() {
   // If not authenticated, show the modern welcome website
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white overflow-y-auto">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
         {/* Navigation */}
         <nav className="container mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                <Code2 className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden">
+                <Image
+                  src="/logo.png"
+                  alt="Dumbify Logo"
+                  width={40}
+                  height={40}
+                  className="object-cover"
+                />
               </div>
               <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                 Dumbify
@@ -244,8 +251,14 @@ export default function Home() {
         <footer className="container mx-auto px-6 py-8 border-t border-white/10">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <Code2 className="w-4 h-4 text-white" />
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden">
+                <Image
+                  src="/logo.png"
+                  alt="Dumbify Logo"
+                  width={32}
+                  height={32}
+                  className="object-cover"
+                />
               </div>
               <span className="font-semibold">Dumbify</span>
             </div>
