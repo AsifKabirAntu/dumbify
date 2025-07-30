@@ -475,7 +475,12 @@ export default function ShareCardsSection({ onBack }: ShareCardsSectionProps) {
             if (!cardRef.current) return
             setIsGenerating(true)
             try {
-              const canvas = await html2canvas(cardRef.current, { useCORS: true })
+              const canvas = await html2canvas(cardRef.current, {
+                useCORS: true,
+                width: 700,
+                height: 700,
+                background: 'transparent',
+              } as any)
               const link = document.createElement('a')
               link.download = `dumbify-card-${currentCardIndex + 1}.png`
               link.href = canvas.toDataURL()
@@ -517,7 +522,7 @@ function ModernCard({ card, shareData }: { card: any, shareData: ShareData }) {
   const lineHeight = getDynamicLineHeight(displayContent)
   
   return (
-    <div className="w-[500px] h-[700px] bg-gradient-to-br from-purple-600 via-blue-600 to-cyan-600 p-6 text-white rounded-xl relative overflow-hidden">
+    <div className="w-[700px] h-[700px] bg-gradient-to-br from-purple-600 via-blue-600 to-cyan-600 p-10 text-white rounded-xl relative overflow-hidden">
       <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
       <div className="relative z-10 h-full flex flex-col">
         <div className="flex items-center justify-between mb-4">
@@ -576,7 +581,7 @@ function DeveloperCard({ card, shareData }: { card: any, shareData: ShareData })
   const lineHeight = getDynamicLineHeight(displayContent)
   
   return (
-    <div className="w-[500px] h-[700px] bg-gray-900 p-6 text-green-400 rounded-xl font-mono border border-green-500/30">
+    <div className="w-[700px] h-[700px] bg-gray-900 p-10 text-green-400 rounded-xl font-mono border border-green-500/30">
       <div className="h-full flex flex-col">
         <div className="flex items-center justify-between mb-4 text-green-300">
           <div className="flex items-center gap-2 text-base font-medium">
@@ -639,7 +644,7 @@ function MinimalCard({ card, shareData }: { card: any, shareData: ShareData }) {
   const lineHeight = getDynamicLineHeight(displayContent)
   
   return (
-    <div className="w-[500px] h-[700px] bg-white p-6 text-gray-900 rounded-xl shadow-lg border">
+    <div className="w-[700px] h-[700px] bg-white p-10 text-gray-900 rounded-xl shadow-lg border">
       <div className="h-full flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
@@ -700,7 +705,7 @@ function RetroCard({ card, shareData }: { card: any, shareData: ShareData }) {
   const lineHeight = getDynamicLineHeight(displayContent)
   
   return (
-    <div className="w-[500px] h-[700px] bg-black p-6 text-cyan-400 rounded-xl relative overflow-hidden" style={{
+    <div className="w-[700px] h-[700px] bg-black p-10 text-cyan-400 rounded-xl relative overflow-hidden" style={{
       background: 'linear-gradient(45deg, #ff006e, #8338ec, #3a86ff)',
       filter: 'contrast(1.1) saturate(1.2)'
     }}>
@@ -772,7 +777,7 @@ function ProfessionalCard({ card, shareData }: { card: any, shareData: ShareData
   const lineHeight = getDynamicLineHeight(displayContent)
   
   return (
-    <div className="w-[500px] h-[700px] bg-gradient-to-b from-blue-600 to-blue-800 p-6 text-white rounded-xl">
+    <div className="w-[700px] h-[700px] bg-gradient-to-b from-blue-600 to-blue-800 p-10 text-white rounded-xl">
       <div className="h-full flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">

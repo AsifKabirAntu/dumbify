@@ -56,18 +56,33 @@ export default function ShareableCardGenerator({
     
     setIsGenerating(true)
     try {
-      const canvas = await html2canvas(cardRef.current, {
-        useCORS: true
-      })
+      const element = cardRef.current;
       
-      const link = document.createElement('a')
-      link.download = `dumbify-${tone}-explanation.png`
-      link.href = canvas.toDataURL()
-      link.click()
+      // Set exact dimensions before capture
+      element.style.width = '1080px';
+      element.style.height = '1080px';
+      
+      const canvas = await html2canvas(element, {
+        width: 1080,
+        height: 1080,
+        useCORS: true,
+        allowTaint: true,
+        background: 'transparent'
+      });
+      
+      // Reset element size
+      element.style.width = '';
+      element.style.height = '';
+      
+      // Save the image
+      const link = document.createElement('a');
+      link.download = `dumbify-${tone}-explanation.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
     } catch (error) {
-      console.error('Error generating image:', error)
+      console.error('Error generating image:', error);
     } finally {
-      setIsGenerating(false)
+      setIsGenerating(false);
     }
   }
 
@@ -158,6 +173,29 @@ Research it yourself: dumbify.dev
     }
   }
 
+  /* -------------------------------------------
+     Off-screen card (exact 1080 × 1080)
+     This wrapper ensures the inner template is
+     rendered at strict dimensions without any
+     Tailwind sizing overrides. Only this node is
+     passed to html2canvas.
+  ------------------------------------------- */
+  const OffscreenCard = () => (
+    <div
+      ref={cardRef}
+      style={{
+        width: '1080px',
+        height: '1080px',
+        overflow: 'hidden',
+        position: 'absolute',
+        inset: 0,
+      }}
+      data-card="offscreen"
+    >
+      {getCardContent()}
+    </div>
+  )
+
   return (
     <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
       <div className="flex items-center justify-between mb-6">
@@ -176,18 +214,20 @@ Research it yourself: dumbify.dev
         </div>
       </div>
 
+      {/* Hidden strict-size card for download */}
+      <div
+        style={{ position: 'fixed', top: -2000, left: 0, width: 1080, height: 1080 }}
+      >
+        <OffscreenCard />
+      </div>
+
       {/* Card Preview */}
       <div className="relative mb-6">
-        <div className="relative overflow-hidden rounded-lg w-[432px] h-[432px] mx-auto">
-          <div 
-            ref={cardRef}
-            className="w-[1080px] h-[1080px] origin-top-left"
-            style={{ 
-              transform: 'scale(0.4)',
-              transformOrigin: 'top left'
-            }}
-          >
-            {getCardContent()}
+        <div className="relative overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800">
+          <div className="aspect-square w-full max-w-[600px] mx-auto relative">
+            <div className="absolute inset-0 rounded-lg overflow-hidden">
+              {getCardContent()}
+            </div>
           </div>
         </div>
 
@@ -204,21 +244,6 @@ Research it yourself: dumbify.dev
         >
           <ChevronRight className="w-4 h-4" />
         </button>
-
-        {/* Template Dots */}
-        <div className="flex justify-center mt-4 gap-2">
-          {cardTemplates.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setActiveTemplate(index)}
-              className={`w-2 h-2 rounded-full transition-all ${
-                index === activeTemplate 
-                  ? 'bg-blue-500' 
-                  : 'bg-gray-300 dark:bg-gray-600 hover:bg-gray-400'
-              }`}
-            />
-          ))}
-        </div>
       </div>
 
       {/* Template Selector */}
@@ -287,64 +312,42 @@ Research it yourself: dumbify.dev
 // Card Templates
 function ModernGradientCard({ code, overview, tone }: { code: string, overview: string, tone: string }) {
   return (
-    <div className="w-full h-full bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 p-8 text-white relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-4 left-4 w-32 h-32 border border-white/30 rounded-full"></div>
-        <div className="absolute bottom-4 right-4 w-24 h-24 border border-white/30 rounded-full"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-6xl font-bold opacity-5">
-          DUMBIFY
+    <div 
+      data-card-content
+      className="w-full h-full bg-gradient-to-br from-purple-500 via-blue-500 to-blue-600 p-8 text-white relative"
+      style={{
+        width: '1080px',
+        height: '1080px',
+        aspectRatio: '1/1',
+        boxSizing: 'border-box'
+      }}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <span className="text-2xl">{toneEmojis[tone as keyof typeof toneEmojis]} {tone.charAt(0).toUpperCase() + tone.slice(1)}</span>
+        </div>
+        <div className="text-right">
+          <div className="font-bold text-xl">Dumbify</div>
+          <div className="text-sm opacity-90">dumbify.dev</div>
         </div>
       </div>
-      
-      <div className="relative z-10 h-full flex flex-col">
-        {/* Header with Prominent Branding */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm border border-white/30">
-              <span className="text-2xl font-bold text-white">D</span>
-            </div>
-            <div>
-              <div className="font-bold text-xl">DUMBIFY</div>
-              <div className="text-sm opacity-90">Code Made Simple</div>
-            </div>
-          </div>
-          <span className="text-3xl">{toneEmojis[tone as keyof typeof toneEmojis]}</span>
+
+      {/* Code Section */}
+      <div className="mb-6">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-lg">💻</span>
+          <span className="font-bold">The Code</span>
         </div>
-        
-        <div className="flex-1 space-y-4">
-          <div className="bg-black/20 rounded-lg p-4 backdrop-blur-sm border border-white/20">
-            <div className="text-xs opacity-75 mb-2 flex items-center gap-2">
-              <span>💻 CODE INPUT</span>
-              <span className="text-xs bg-white/20 px-2 py-1 rounded-full">{toneLabels[tone as keyof typeof toneLabels]}</span>
-            </div>
-            <div className="font-mono text-sm leading-relaxed">
-              {code.length > 90 ? code.substring(0, 90) + '...' : code}
-            </div>
-          </div>
-          
-          <div className="bg-white/20 rounded-lg p-4 backdrop-blur-sm border border-white/20">
-            <div className="text-xs opacity-75 mb-2">✨ AI EXPLANATION</div>
-            <div className="text-sm leading-relaxed">
-              {overview.length > 100 ? overview.substring(0, 100) + '...' : overview}
-            </div>
-          </div>
+        <div className="bg-black/20 rounded-lg p-4 font-mono text-sm">
+          {code}
         </div>
-        
-        {/* Viral Call-to-Action Footer */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20 mt-4">
-          <div className="text-center">
-            <div className="text-lg font-bold mb-1">🚀 Try Dumbify FREE!</div>
-            <div className="text-sm opacity-90 mb-2">Explain YOUR code in hilarious ways</div>
-            <div className="flex items-center justify-center gap-4 text-xs">
-              <span>dumbify.dev</span>
-              <span>•</span>
-              <span>#DumbifyThis</span>
-              <span>•</span>
-              <span>@DumbifyApp</span>
-            </div>
-          </div>
-        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="absolute bottom-8 left-0 right-0 text-center">
+        <div className="text-lg font-bold mb-2">Try Dumbify FREE! 🚀</div>
+        <div className="text-sm opacity-90">#CodeExplained #Developer #AI</div>
       </div>
     </div>
   )
