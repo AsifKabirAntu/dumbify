@@ -475,15 +475,40 @@ export default function ShareCardsSection({ onBack }: ShareCardsSectionProps) {
             if (!cardRef.current) return
             setIsGenerating(true)
             try {
-              const canvas = await html2canvas(cardRef.current, {
-                useCORS: true,
+              const element = cardRef.current;
+              
+              // Store original styles
+              const originalWidth = element.style.width;
+              const originalHeight = element.style.height;
+              const originalTransform = element.style.transform;
+              
+              // Set exact dimensions for capture
+              element.style.width = '700px';
+              element.style.height = '700px';
+              element.style.transform = 'none';
+              
+              // Wait a brief moment for styles to apply
+              await new Promise(resolve => setTimeout(resolve, 100));
+              
+              const canvas = await html2canvas(element, {
                 width: 700,
                 height: 700,
+                useCORS: true,
+                allowTaint: true,
+                background: 'transparent'
               })
+              
+              // Restore original styles
+              element.style.width = originalWidth;
+              element.style.height = originalHeight;
+              element.style.transform = originalTransform;
+              
               const link = document.createElement('a')
               link.download = `dumbify-card-${currentCardIndex + 1}.png`
-              link.href = canvas.toDataURL()
+              link.href = canvas.toDataURL('image/png')
               link.click()
+            } catch (error) {
+              console.error('Error generating image:', error);
             } finally {
               setIsGenerating(false)
             }
