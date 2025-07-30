@@ -475,7 +475,11 @@ export default function ShareCardsSection({ onBack }: ShareCardsSectionProps) {
             if (!cardRef.current) return
             setIsGenerating(true)
             try {
-              const canvas = await html2canvas(cardRef.current, { useCORS: true })
+              const canvas = await html2canvas(cardRef.current, {
+                useCORS: true,
+                width: 700,
+                height: 700,
+              })
               const link = document.createElement('a')
               link.download = `dumbify-card-${currentCardIndex + 1}.png`
               link.href = canvas.toDataURL()
